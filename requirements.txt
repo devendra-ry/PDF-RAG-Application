@@ -1,0 +1,8 @@
+faiss-cpu
+sentence-transformers
+openai
+python-dotenv
+PyPDF2
+tiktoken
+streamlit
+google-generativeai
