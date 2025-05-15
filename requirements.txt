@@ -7,4 +7,3 @@ tiktoken
 streamlit
 google-generativeai
 numpy  # Used in vector_store.py
-pickle  # Standard library, not needed in requirements
