@@ -53,7 +53,7 @@ def main():
     
     embedding_model = st.sidebar.selectbox(
         "Embedding Model",
-        ["all-MiniLM-L12-v2", "all-MiniLM-L6-v2", "all-mpnet-base-v2", "paraphrase-multilingual-MiniLM-L12-v2"],
+        ["all-MiniLM-L12-v2", "all-MiniLM-L6-v2", "all-mpnet-base-v2", "paraphrase-multilingual-MiniLM-L12-v2", "BAAI/bge-m3"],
         index=0
     )
     

@@ -6,7 +6,7 @@ from typing import List, Dict, Tuple, Any
 from sentence_transformers import SentenceTransformer
 
 class VectorStore:
-    def __init__(self, embedding_model_name: str = "all-MiniLM-L12-v2"):
+    def __init__(self, embedding_model_name: str = "all-MiniLM-L6-v2"):
         """
         Initialize the vector store with an embedding model.
         
