@@ -21,39 +21,54 @@ def main():
     # Sidebar for configuration
     st.sidebar.header("Configuration")
     
-    # Model selection
-    api_option = st.sidebar.radio(
-        "Select API Provider:",
-        ["Gemini"]
-        #["OpenAI", "OpenRouter", "Gemini"]
+    # API Configuration
+    st.sidebar.subheader("LLM API Configuration")
+    api_base_url = st.sidebar.text_input(
+        "API Base URL",
+        value="https://openrouter.ai/api/v1",
+        help="Base URL for the OpenAI-compatible API (e.g., OpenAI, OpenRouter)"
     )
     
-    use_openrouter = api_option == "OpenRouter"
-    use_gemini = api_option == "Gemini"
+    # Model selection
+    model_name = st.sidebar.text_input(
+        "Model Name",
+        value="z-ai/glm-4.5-air:free",
+        help="Name of the model to use"
+    )
     
-    # In the main function, update the model selection part:
-    if use_gemini:
-        model_name = st.sidebar.selectbox(
-            "Gemini Model",
-            ["gemini-2.0-flash", "gemini-2.5-flash-preview-04-17"],
-            index=0
+    # Qdrant Configuration
+    st.sidebar.subheader("Qdrant Configuration")
+    use_external_qdrant = st.sidebar.checkbox("Use External Qdrant Cluster", value=False)
+    
+    if use_external_qdrant:
+        qdrant_url = st.sidebar.text_input(
+            "Qdrant URL",
+            value="https://dfc9f545-1fba-45eb-ac87-a2c620553ca6.eu-central-1-0.aws.cloud.qdrant.io:6333",
+            help="URL of your Qdrant cluster"
         )
-    # elif use_openrouter:
-    #     model_name = st.sidebar.text_input(
-    #         "OpenRouter Model Name",
-    #         value="openrouter/anthropic/claude-3-opus",
-    #         help="Format: openrouter/provider/model_name"
-    #     )
-    # else:
-    #     model_name = st.sidebar.text_input(
-    #         "OpenAI Model Name",
-    #         value="gpt-4o",
-    #         help="OpenAI model name"
-    #     )
+        # Try to get API key from environment variable first, with option to override
+        default_qdrant_key = os.getenv("QDRANT_API_KEY", "")
+        if default_qdrant_key:
+            qdrant_api_key = st.sidebar.text_input(
+                "Qdrant API Key",
+                value=default_qdrant_key,
+                type="password",
+                help="API key for your Qdrant cluster (loaded from environment variable)"
+            )
+        else:
+            qdrant_api_key = st.sidebar.text_input(
+                "Qdrant API Key",
+                value="",
+                type="password",
+                help="API key for your Qdrant cluster"
+            )
+    else:
+        qdrant_url = None
+        qdrant_api_key = None
     
     embedding_model = st.sidebar.selectbox(
         "Embedding Model",
-        ["all-MiniLM-L12-v2", "all-MiniLM-L6-v2", "all-mpnet-base-v2", "paraphrase-multilingual-MiniLM-L12-v2", "BAAI/bge-m3"],
+        ["Qwen/Qwen3-Embedding-0.6B", "all-MiniLM-L12-v2", "all-MiniLM-L6-v2", "all-mpnet-base-v2", "paraphrase-multilingual-MiniLM-L12-v2", "BAAI/bge-m3"],
         index=0
     )
     
@@ -63,16 +78,17 @@ def main():
         chunk_overlap = st.slider("Chunk Overlap (tokens)", 0, 500, 200)
         retrieval_k = st.slider("Number of chunks to retrieve", 1, 10, 5)
     
-    # Check if vector store exists
-    vector_store_exists = os.path.exists("vector_store/index.faiss")
+    # Check if vector store exists and is complete (has model_name.txt)
+    vector_store_exists = os.path.exists("vector_store") and os.path.exists(os.path.join("vector_store", "model_name.txt"))
     
     # Initialize or load RAG app
     if "rag_app" not in st.session_state or st.sidebar.button("Reinitialize App"):
         if vector_store_exists:
             st.session_state.rag_app = RAGApp.load(
                 llm_model_name=model_name,
-                use_openrouter=use_openrouter,
-                use_gemini=use_gemini,
+                api_base_url=api_base_url,
+                qdrant_url=qdrant_url if use_external_qdrant else None,
+                qdrant_api_key=qdrant_api_key if use_external_qdrant else None,
                 retrieval_k=retrieval_k
             )
             st.sidebar.success("Loaded existing vector store")
@@ -80,8 +96,9 @@ def main():
             st.session_state.rag_app = RAGApp(
                 embedding_model_name=embedding_model,
                 llm_model_name=model_name,
-                use_openrouter=use_openrouter,
-                use_gemini=use_gemini,
+                api_base_url=api_base_url,
+                qdrant_url=qdrant_url if use_external_qdrant else None,
+                qdrant_api_key=qdrant_api_key if use_external_qdrant else None,
                 chunk_size=chunk_size,
                 chunk_overlap=chunk_overlap,
                 retrieval_k=retrieval_k
