@@ -39,4 +39,4 @@ Thumbs.db
 *.log
 
 # PDF files (if you don't want to track test PDFs)
-# *.pdf
+# *.pdf".env" 
