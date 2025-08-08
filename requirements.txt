@@ -1,9 +1,0 @@
-faiss-cpu
-sentence-transformers
-openai
-python-dotenv
-PyMuPDF  # Used in pdf_processor.py instead of PyPDF2
-tiktoken
-streamlit
-google-generativeai
-numpy  # Used in vector_store.py

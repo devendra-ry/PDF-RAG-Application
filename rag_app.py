@@ -7,10 +7,11 @@ from llm_interface import LLMInterface
 class RAGApp:
     def __init__(
         self,
-        embedding_model_name: str = "all-MiniLM-L6-v2",
-        llm_model_name: str = None,
-        use_openrouter: bool = False,
-        use_gemini: bool = False,
+        embedding_model_name: str = "Qwen/Qwen3-Embedding-0.6B",
+        llm_model_name: str = "gpt-4o",
+        api_base_url: str = "https://api.openai.com/v1",
+        qdrant_url: str = None,
+        qdrant_api_key: str = None,
         chunk_size: int = 800,
         chunk_overlap: int = 200,
         retrieval_k: int = 5
@@ -21,23 +22,30 @@ class RAGApp:
         Args:
             embedding_model_name: Name of the embedding model
             llm_model_name: Name of the LLM model
-            use_openrouter: Whether to use OpenRouter API
+            api_base_url: Base URL for the OpenAI-compatible API
+            qdrant_url: URL of the Qdrant cluster (if None, uses in-memory)
+            qdrant_api_key: API key for the Qdrant cluster (if needed)
             chunk_size: Size of text chunks in tokens
             chunk_overlap: Overlap between chunks in tokens
             retrieval_k: Number of chunks to retrieve for each query
         """
         self.embedding_model_name = embedding_model_name
         self.llm_model_name = llm_model_name
-        self.use_openrouter = use_openrouter
-        self.use_gemini = use_gemini
+        self.api_base_url = api_base_url
+        self.qdrant_url = qdrant_url
+        self.qdrant_api_key = qdrant_api_key
         self.chunk_size = chunk_size
         self.chunk_overlap = chunk_overlap
         self.retrieval_k = retrieval_k
         
         # Initialize components
         self.pdf_processor = PDFProcessor(chunk_size=chunk_size, chunk_overlap=chunk_overlap)
-        self.vector_store = VectorStore(embedding_model_name=embedding_model_name)
-        self.llm_interface = LLMInterface(model_name=llm_model_name, use_openrouter=use_openrouter, use_gemini=use_gemini)
+        self.vector_store = VectorStore(
+            embedding_model_name=embedding_model_name,
+            qdrant_url=qdrant_url,
+            qdrant_api_key=qdrant_api_key
+        )
+        self.llm_interface = LLMInterface(model_name=llm_model_name, api_base_url=api_base_url)
         
         # Create vector store directory
         os.makedirs("vector_store", exist_ok=True)
@@ -89,9 +97,10 @@ class RAGApp:
     @classmethod
     def load(
         cls,
-        llm_model_name: str = None,
-        use_openrouter: bool = False,
-        use_gemini: bool = False,
+        llm_model_name: str = "gpt-4o",
+        api_base_url: str = "https://api.openai.com/v1",
+        qdrant_url: str = None,
+        qdrant_api_key: str = None,
         retrieval_k: int = 5
     ) -> 'RAGApp':
         """
@@ -99,21 +108,27 @@ class RAGApp:
         
         Args:
             llm_model_name: Name of the LLM model
-            use_openrouter: Whether to use OpenRouter API
+            api_base_url: Base URL for the OpenAI-compatible API
+            qdrant_url: URL of the Qdrant cluster (if None, uses in-memory)
+            qdrant_api_key: API key for the Qdrant cluster (if needed)
             retrieval_k: Number of chunks to retrieve for each query
             
         Returns:
             Loaded RAGApp instance
         """
         # Load vector store
-        vector_store = VectorStore.load()
+        vector_store = VectorStore.load(
+            qdrant_url=qdrant_url,
+            qdrant_api_key=qdrant_api_key
+        )
         
         # Create instance
         app = cls(
             embedding_model_name=vector_store.embedding_model_name,
             llm_model_name=llm_model_name,
-            use_openrouter=use_openrouter,
-            use_gemini=use_gemini,
+            api_base_url=api_base_url,
+            qdrant_url=qdrant_url,
+            qdrant_api_key=qdrant_api_key,
             retrieval_k=retrieval_k
         )
         
