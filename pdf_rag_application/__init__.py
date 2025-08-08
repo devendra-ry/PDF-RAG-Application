@@ -1,1 +1,0 @@
-"""PDF RAG Application - A package for querying PDF documents using Retrieval-Augmented Generation."""
