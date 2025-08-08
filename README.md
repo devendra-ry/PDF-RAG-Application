@@ -11,6 +11,31 @@ This application allows you to upload PDF documents, index their content, and as
 - Integration with any OpenAI API-compatible models (OpenAI, OpenRouter, Together AI, Mistral, etc.)
 - Streamlit user interface
 
+## Project Structure
+
+```
+pdf-rag-application/
+├── pdf_rag_application/           # Main package
+│   ├── __init__.py               # Package initialization
+│   ├── main.py                   # Main entry point
+│   ├── core/                     # Core modules
+│   │   ├── __init__.py          # Core package initialization
+│   │   ├── pdf_processor.py     # PDF text extraction and chunking
+│   │   ├── vector_store.py      # Vector store implementation
+│   │   ├── llm_interface.py     # LLM interface
+│   │   └── rag_app.py           # Main RAG application
+│   └── ui/                       # User interface modules
+│       ├── __init__.py          # UI package initialization
+│       └── ui.py                # Streamlit UI
+├── tests/                        # Test modules
+│   ├── __init__.py              # Tests package initialization
+│   ├── test_vector_store.py     # Vector store tests
+│   └── run_tests.py             # Test runner
+├── pyproject.toml               # Project configuration
+├── README.md                    # This file
+└── LICENSE                      # License information
+```
+
 ## Setup
 
 1. Clone this repository
@@ -43,12 +68,12 @@ QDRANT_API_KEY=your_qdrant_api_key_here
 5. Run the application:
 
 ```bash
-streamlit run ui.py
+streamlit run pdf_rag_application/ui/ui.py
 ```
 
 ## Usage
 
-1. Start the application with `streamlit run ui.py`
+1. Start the application with `streamlit run pdf_rag_application/ui/ui.py`
 2. In the sidebar, configure your settings:
    - **LLM API Configuration**:
      - Set the API Base URL (e.g., "https://api.openai.com/v1" for OpenAI, "https://openrouter.ai/api/v1" for OpenRouter)
@@ -66,14 +91,14 @@ streamlit run ui.py
 To run tests:
 
 ```bash
-python run_tests.py
+python tests/run_tests.py
 ```
 
 Or directly with pytest:
 
 ```bash
 uv pip install -e .[dev]
-pytest test_vector_store.py
+pytest tests/test_vector_store.py
 ```
 
 ## Example Document

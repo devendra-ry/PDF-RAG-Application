@@ -31,7 +31,7 @@ build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["pdf_rag*"]
+include = ["pdf_rag_application*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
