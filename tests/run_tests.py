@@ -9,6 +9,6 @@ if __name__ == "__main__":
     import pytest
     import sys
     
-    # Run tests
-    exit_code = pytest.main(["-v", "tests/test_vector_store.py"])
+    # Run all tests
+    exit_code = pytest.main(["-v", "tests/"])
     sys.exit(exit_code)

@@ -15,21 +15,27 @@ This application allows you to upload PDF documents, index their content, and as
 
 ```
 pdf-rag-application/
-├── pdf_rag_application/           # Main package
+├── src/                          # Source code
 │   ├── __init__.py               # Package initialization
 │   ├── main.py                   # Main entry point
-│   ├── core/                     # Core modules
-│   │   ├── __init__.py          # Core package initialization
+│   ├── components/               # Core components
+│   │   ├── __init__.py          # Components package initialization
 │   │   ├── pdf_processor.py     # PDF text extraction and chunking
 │   │   ├── vector_store.py      # Vector store implementation
 │   │   ├── llm_interface.py     # LLM interface
-│   │   └── rag_app.py           # Main RAG application
-│   └── ui/                       # User interface modules
-│       ├── __init__.py          # UI package initialization
-│       └── ui.py                # Streamlit UI
+│   │   └── application.py       # Main application
+│   └── web/                      # Web interface modules
+│       ├── __init__.py          # Web package initialization
+│       └── app.py               # Streamlit web application
 ├── tests/                        # Test modules
 │   ├── __init__.py              # Tests package initialization
-│   ├── test_vector_store.py     # Vector store tests
+│   ├── components/              # Component tests
+│   │   ├── __init__.py         # Component tests initialization
+│   │   ├── test_vector_store.py # Vector store tests
+│   │   └── test_application.py # Application tests
+│   ├── web/                     # Web tests
+│   │   ├── __init__.py         # Web tests initialization
+│   │   └── test_app.py         # Web application tests
 │   └── run_tests.py             # Test runner
 ├── pyproject.toml               # Project configuration
 ├── README.md                    # This file
@@ -68,12 +74,12 @@ QDRANT_API_KEY=your_qdrant_api_key_here
 5. Run the application:
 
 ```bash
-streamlit run pdf_rag_application/ui/ui.py
+streamlit run src/web/app.py
 ```
 
 ## Usage
 
-1. Start the application with `streamlit run pdf_rag_application/ui/ui.py`
+1. Start the application with `streamlit run src/web/app.py`
 2. In the sidebar, configure your settings:
    - **LLM API Configuration**:
      - Set the API Base URL (e.g., "https://api.openai.com/v1" for OpenAI, "https://openrouter.ai/api/v1" for OpenRouter)
@@ -98,7 +104,7 @@ Or directly with pytest:
 
 ```bash
 uv pip install -e .[dev]
-pytest tests/test_vector_store.py
+pytest tests/
 ```
 
 ## Example Document
