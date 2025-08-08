@@ -7,13 +7,12 @@ This module provides functionality to:
 """
 
 import os
-import numpy as np
 from qdrant_client import QdrantClient
 from qdrant_client.models import VectorParams, Distance, PointStruct, SearchParams
 import pickle
-from typing import List, Dict, Tuple, Any
+from typing import List, Dict, Any
 from sentence_transformers import SentenceTransformer
-import torch # Import torch to check for CUDA
+import torch  # Import torch to check for CUDA
 
 class VectorStore:
     def __init__(self, embedding_model_name: str = "Qwen/Qwen3-Embedding-0.6B", collection_name: str = "pdf_rag_collection", qdrant_url: str = None, qdrant_api_key: str = None):

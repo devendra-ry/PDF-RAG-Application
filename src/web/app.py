@@ -7,12 +7,8 @@ This module provides a web interface for:
 """
 
 import os
-import sys
 import streamlit as st
 import tempfile
-
-# Add the project root to the path so we can import the components modules
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
 
 from src.components.application import RAGApp
 
@@ -148,7 +144,7 @@ def main():
                     for path in pdf_paths:
                         try:
                             os.unlink(path)
-                        except:
+                        except OSError:
                             pass
     
     # Query tab
@@ -169,7 +165,7 @@ def main():
                     
                     with st.expander("View Retrieved Chunks"):
                         for i, chunk in enumerate(result["retrieved_chunks"]):
-                            st.markdown(f"**Chunk {i+1}** (Source: {os.path.basename(chunk['source'])})")
+                            st.markdown(f"**Chunk {i + 1}** (Source: {os.path.basename(chunk['source'])})")
                             st.text(chunk["text"][:500] + "..." if len(chunk["text"]) > 500 else chunk["text"])
                             st.markdown("---")
 

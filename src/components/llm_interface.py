@@ -78,7 +78,7 @@ Answer:"""
         prompt = self.create_prompt(query, retrieved_chunks)
         try:
             # Debug: Print request details
-            print(f"DEBUG LLM Request:")
+            print("DEBUG LLM Request:")
             print(f"  Base URL: {self.client.base_url}")
             print(f"  Model: {self.model_name}")
             # Note: Do not print the full API key for security

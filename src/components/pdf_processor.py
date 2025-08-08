@@ -10,7 +10,7 @@ import os
 import fitz  # PyMuPDF
 import tiktoken
 import re
-from typing import List, Dict, Tuple
+from typing import List, Dict
 
 class PDFProcessor:
     def __init__(self, chunk_size: int = 800, chunk_overlap: int = 200):
@@ -113,9 +113,9 @@ class PDFProcessor:
         
         # Recombine section headers with their content
         semantic_chunks = []
-        for i in range(0, len(sections)-1, 2):
-            if i+1 < len(sections):
-                semantic_chunks.append(sections[i] + sections[i+1])
+        for i in range(0, len(sections) - 1, 2):
+            if i + 1 < len(sections):
+                semantic_chunks.append(sections[i] + sections[i + 1])
             else:
                 semantic_chunks.append(sections[i])
         
